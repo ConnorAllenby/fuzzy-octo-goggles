@@ -15,16 +15,21 @@ public class Player_RunningState : PlayerBaseState
     }
     public override void ExitState(PlayerController player)
     {
+
     }
     public override void UpdateState(PlayerController player)
     {
         
         Debug.Log(timeleft);
+
+        #region Jump
         if (Input.GetButton("Jump"))
         {
             player.TransitionToState(player.playerJumpingState);
         }
+        #endregion
 
+        #region RunningLogic
         // Movement Logic
         player.sideSpeed = Input.GetAxis("Horizontal") * player.movementSpeed;
         player.forwardSpeed = Input.GetAxis("Vertical") * player.movementSpeed;
@@ -44,7 +49,14 @@ public class Player_RunningState : PlayerBaseState
                 player.TransitionToState(player.playerIdleState);
                 Debug.Log("Yeet");
             }
-            
         }
+        #endregion
+
+        #region Sprint
+        if(Input.GetKeyDown(KeyCode.LeftShift) && player.characterController.isGrounded && Input.GetAxis("Vertical") > 0)
+        {
+            player.forwardSpeed = Input.GetAxis("Vertical") * player.sprintSpeed;
+        }
+        #endregion
     }
 }

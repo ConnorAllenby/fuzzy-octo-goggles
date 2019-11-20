@@ -48,7 +48,7 @@ public class PlayerController : MonoBehaviour {
     public readonly Player_IdleState playerIdleState = new Player_IdleState();
     public readonly Player_RunningState playerRunningState = new Player_RunningState();
     public readonly Player_JumpingState playerJumpingState = new Player_JumpingState();
-
+    public readonly Player_SprintState playerSprintState = new Player_SprintState();
 
     void Awake()
     {
