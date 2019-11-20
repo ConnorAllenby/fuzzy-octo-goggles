@@ -32,6 +32,7 @@ public class Player_RunningState : PlayerBaseState
         player.speed = player.transform.rotation * player.speed;
         player.characterController.Move(player.speed * Time.deltaTime);
 
+        //.
 
         if (Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") == 0)
         {
