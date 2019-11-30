@@ -7,44 +7,62 @@ namespace weapons
 {
     public class GunScript : MonoBehaviour
     {
+        #region variables
+        //Gunstats
+        [Header("Gunstats")]
         public float damage = 10f;
         public float range = 100f;
-        public Camera playerCamera;
-        public float impactForce;
         public float rateOfFire;
+        public int MagazineSize;
+        public int currentAmmo;
+        public float reloadTime;
+        public float impactForce;
+        public Camera playerCamera;
         private float nextTimeToFire = 0f;
-        public float ADS_Speed;
+        [Range(0, 1)]
+        public float spreadFactor;
+        float currentSpreadFactor;
+
+        //Effects
+        [Header("Effects")]
+        public ParticleSystem bulletTrail;
+        public float bulletTrailSpeed;
+        public Transform MuzzleShotTransform;
         public LayerMask mask;
         public bool invertMask;
         public ParticleSystem muzzleFlash;
         public GameObject impactEffect;
-        public int MagazineSize;
-        public int currentAmmo;
-        public float reloadTime;
 
-        [Range(0,1)]
-        public float spreadFactor;
-        float currentSpreadFactor;
-
+        //Weapon Feel
+        [Header("WeaponFeel")]
         [SerializeField]
         GameObject weaponParent;
         public Vector3 currentWeaponPosition;
         public Vector3 ADSWeaponPosition;
         public Vector3 DefaultWeaponPosition;
         public Vector3 SprintWeaponPosition;
+        public float ADS_Speed;
 
+        //Bool Checks
+        [Header("BoolChecks")]
         public bool playerIsSprinting = false;
         public bool playerIsADS = false;
 
+        //Audio
+        [Header("Audio")]
         public AudioSource myAudio;
         public AudioClip reloadSound;
         public AudioClip bulletSound;
-        public ParticleSystem bulletTrail;
+
+        #endregion
         // Use this for initialization
 
         private void Awake()
         {
             myAudio = gameObject.GetComponent<AudioSource>();
+            bulletTrail.transform.position = MuzzleShotTransform.position;
+            bulletTrail.transform.rotation = MuzzleShotTransform.rotation;
+            muzzleFlash.transform.position = MuzzleShotTransform.position;
         }
         void Start()
         {
@@ -147,7 +165,7 @@ namespace weapons
                 currentAmmo--;
                 Debug.Log(currentAmmo);
                 muzzleFlash.Play();
-                bulletTrail.Play();
+                ProjectileBulletTrail();
             }
             else if (currentAmmo <= 0)
             {
@@ -168,6 +186,13 @@ namespace weapons
             yield return new WaitForSeconds(reloadTime);
             currentAmmo = MagazineSize;
 
+        }
+
+        void ProjectileBulletTrail()
+        {
+
+            ParticleSystem newGOBulletTrail = Instantiate(bulletTrail, MuzzleShotTransform.position, MuzzleShotTransform.rotation);
+            newGOBulletTrail.GetComponent<Rigidbody>().AddForce(transform.forward * bulletTrailSpeed);
         }
     }
 }
