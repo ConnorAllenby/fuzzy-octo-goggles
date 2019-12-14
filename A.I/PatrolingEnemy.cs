@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
+using System.Collections.Generic;
 
 
 public class PatrolingEnemy : MonoBehaviour
 {
 
-    public Transform[] points;
-    
+    //public Transform[] points;
+    public List<Transform> points = new List<Transform>();
+    public GameObject PedRoute;
+
     public NavMeshAgent agent;
     public Animator anim;
     public float currentspeed;
@@ -16,12 +19,16 @@ public class PatrolingEnemy : MonoBehaviour
     public Transform player;
     public float enemyFOV;
 
+
     //FSM
     private EnemyBaseState currentState;
     public readonly IdleState idlestate = new IdleState();
     public readonly PatrolState patrolstate = new PatrolState();
     public readonly AttackState attackstate = new AttackState();
 
+
+    //DEBUG
+    public bool attacksPlayer;
     void Start()
     {
         
@@ -34,6 +41,7 @@ public class PatrolingEnemy : MonoBehaviour
         agent.autoBraking = false;
         agent.speed = movementSpeed;
         player = GameObject.FindGameObjectWithTag("Player").transform;
+        GetRouteNodes();
     }
 
 
@@ -81,6 +89,7 @@ public class PatrolingEnemy : MonoBehaviour
             {
                 if(hit.transform.tag == "Player")
                 {
+                    if(attacksPlayer)
                     Debug.Log("Player seen!");
                     TransitionToState(attackstate);
                 }
@@ -88,14 +97,16 @@ public class PatrolingEnemy : MonoBehaviour
             }
 
         }
-        
-
-
-
         // DEBUG
         Debug.DrawRay(transform.position + transform.up,transform.forward,Color.green);
     }
 
-
+    public void GetRouteNodes()
+    {
+        foreach(Transform child in PedRoute.transform)
+        {
+            points.Add(child.transform);
+        }
+    }
 
 }

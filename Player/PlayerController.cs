@@ -9,11 +9,18 @@ public class PlayerController : MonoBehaviour {
 	public float movementSpeed;
 	[Range(0,10)]
 	public float mouseSensitivity;
+    [Range(0, 10)]
+    public float ADSSensitivity;
+    public float currentSensitivity;
 	[Range(0,30f)]
 	public float jumpSpeed;
 
-	[Range(0,20)]
+    [Range(0, 20)]
+    public float walkSpeed;
+    [Range(0,20)]
 	public float sprintSpeed;
+
+    
 	
 	// DO NOT TOUCH
 	public float sideSpeed;
@@ -44,7 +51,7 @@ public class PlayerController : MonoBehaviour {
 
     //FSM
 
-    private PlayerBaseState currentState;
+    public PlayerBaseState currentState;
     public readonly Player_IdleState playerIdleState = new Player_IdleState();
     public readonly Player_RunningState playerRunningState = new Player_RunningState();
     public readonly Player_JumpingState playerJumpingState = new Player_JumpingState();
@@ -52,7 +59,9 @@ public class PlayerController : MonoBehaviour {
 
     void Awake()
     {
+        movementSpeed = walkSpeed;
         TransitionToState(playerIdleState);
+        currentSensitivity = mouseSensitivity;
     }
 
 	// Use this for initialization
@@ -76,7 +85,6 @@ public class PlayerController : MonoBehaviour {
 	private void FixedUpdate() 
 	{
 		Rotation();
-		Movement();
 
 	}
 
@@ -92,29 +100,31 @@ public class PlayerController : MonoBehaviour {
 	{
 		// Rotation
 		
-		float rotLeftRight = Input.GetAxis("Mouse X") * mouseSensitivity;
+		float rotLeftRight = Input.GetAxis("Mouse X") * currentSensitivity;
 		transform.Rotate(0, rotLeftRight, 0);
 
 		
-		verticalRotation -= Input.GetAxis("Mouse Y") * mouseSensitivity;
+		verticalRotation -= Input.GetAxis("Mouse Y") * currentSensitivity;
 		verticalRotation = Mathf.Clamp(verticalRotation, -upDownRange, upDownRange);
 		Camera.main.transform.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
 	}
 
 	public void Movement()
 	{
-		// Movement
-		if(playerIsSprinting)
-		{
-			//forwardSpeed = Input.GetAxis("Vertical") * sprintSpeed;
-		}
-		else
-		{
-			
-		}
-		
-
-	}
+        sideSpeed = Input.GetAxis("Horizontal") * movementSpeed;
+        forwardSpeed = Input.GetAxis("Vertical") * movementSpeed;
+        speed = new Vector3(sideSpeed, verticalVelocity, forwardSpeed);
+        speed = transform.rotation * speed;
+        characterController.Move(speed * Time.deltaTime);
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            movementSpeed = sprintSpeed;
+        }
+        else
+        {
+            movementSpeed = walkSpeed;
+        }
+    }
 
 	public void PlayerInputs()
 	{

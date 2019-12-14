@@ -20,7 +20,6 @@ public class Player_RunningState : PlayerBaseState
     public override void UpdateState(PlayerController player)
     {
         
-        Debug.Log(timeleft);
 
         #region Jump
         if (Input.GetButton("Jump"))
@@ -31,11 +30,8 @@ public class Player_RunningState : PlayerBaseState
 
         #region RunningLogic
         // Movement Logic
-        player.sideSpeed = Input.GetAxis("Horizontal") * player.movementSpeed;
-        player.forwardSpeed = Input.GetAxis("Vertical") * player.movementSpeed;
-        player.speed = new Vector3(player.sideSpeed, player.verticalVelocity, player.forwardSpeed);
-        player.speed = player.transform.rotation * player.speed;
-        player.characterController.Move(player.speed * Time.deltaTime);
+
+        player.Movement();  
 
         //.
 
@@ -44,7 +40,7 @@ public class Player_RunningState : PlayerBaseState
             // Initialize Idle t¬!imer
             timeleft += Time.deltaTime;
 
-            if (timeleft >= 0.5f) 
+            if (timeleft >= 0.05f) 
             {
                 player.TransitionToState(player.playerIdleState);
                 Debug.Log("Yeet");
@@ -53,10 +49,7 @@ public class Player_RunningState : PlayerBaseState
         #endregion
 
         #region Sprint
-        if(Input.GetKeyDown(KeyCode.LeftShift) && player.characterController.isGrounded && Input.GetAxis("Vertical") > 0)
-        {
-            player.forwardSpeed = Input.GetAxis("Vertical") * player.sprintSpeed;
-        }
+
         #endregion
     }
 }

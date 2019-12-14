@@ -15,6 +15,7 @@ public class PatrolState : EnemyBaseState
         Debug.Log("patrolstate.ENTER");
         enemyAI.movementSpeed = 2f;
         patrolingenemy = enemyAI;
+        enemyAI.agent.autoRepath = true;
     }
 
     public override void ExitState(PatrolingEnemy enemyAI)
@@ -32,7 +33,7 @@ public class PatrolState : EnemyBaseState
     public void GotoNextPoint()
     {
         // Returns if no points have been set up
-        if (patrolingenemy.points.Length == 0)
+        if (patrolingenemy.points.Count == 0)
             return;
 
         // Set the agent to go to the currently selected destination.
@@ -40,7 +41,7 @@ public class PatrolState : EnemyBaseState
 
         // Choose the next point in the array as the destination,
         // cycling to the start if necessary.
-        destPoint = (Random.Range(0, patrolingenemy.points.Length)) % patrolingenemy.points.Length;
+        destPoint = (Random.Range(0, patrolingenemy.points.Count)) % patrolingenemy.points.Count;
     }
 
 

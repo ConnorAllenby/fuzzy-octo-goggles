@@ -15,7 +15,17 @@ public class Player_SprintState : PlayerBaseState
     }
     public override void UpdateState(PlayerController player)
     {
-        
+        if (Input.GetKeyDown(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.W))
+        {
+
+            player.movementSpeed = player.sprintSpeed;
+            player.Movement();
+        }
+        else
+        {
+            player.TransitionToState(player.playerRunningState);
+
+        }
 
     }
 }
